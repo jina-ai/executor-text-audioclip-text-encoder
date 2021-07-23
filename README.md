@@ -68,7 +68,7 @@ jtype: Flow
 pods:
   - name: encoder
     uses: 'jinahub+docker://AudioCLIPTextEncoder'
-	volumes: '/path/to/pwd/.cache:/workspace/.cache'
+    volumes: '/path/to/pwd/.cache:/workspace/.cache'
 ```
 
 #### using source codes
