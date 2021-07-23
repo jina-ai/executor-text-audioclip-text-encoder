@@ -19,7 +19,7 @@ class AudioCLIPTextEncoder(Executor):
         request's parameters)
     :param default_batch_size: default batch size (used if not specified in
         request's parameters)
-    :param device: device that the model is on (should be "cpu", "cuda" or "cuda:X", 
+    :param device: device that the model is on (should be "cpu", "cuda" or "cuda:X",
         where X is the index of the GPU on the machine)
     """
 
@@ -54,7 +54,9 @@ class AudioCLIPTextEncoder(Executor):
         )
 
         for batch in batch_generator:
-            ((_, _, embeddings), _), _ = self.model(text=[[doc.text] for doc in batch])
+            ((_, _, embeddings), _), _ = self.model.encode_text(
+                text=[[doc.text] for doc in batch]
+            )
             embeddings = embeddings.cpu().numpy()
 
             for idx, doc in enumerate(batch):
