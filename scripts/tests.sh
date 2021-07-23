@@ -11,6 +11,8 @@ test_dir=$(pwd)/tests
 pip install wheel
 pip install -r tests/requirements.txt
 pip install .
+scripts/download_full.sh
+
 pytest -s -v tests/
 local_exit_code=$?
 

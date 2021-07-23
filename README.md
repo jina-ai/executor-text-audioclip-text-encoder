@@ -1,15 +1,18 @@
-# 📝 PLEASE READ [THE GUIDELINES](.github/GUIDELINES.md) BEFORE STARTING.
+# ✨ AudioCLIPTextEncoder
 
-# 🏗️ PLEASE CHECK OUT [STEP-BY-STEP](.github/STEP_BY_STEP.md)
+**AudioCLIPTextEncoder** is an encoder that encodes text using the [AudioCLIP](https://arxiv.org/abs/2106.13043) model.
 
-----
+This encoder is meant to be used in conjunction with the AudioCLIP image and audio encoders, as it can embedd text, images and audio to the same latent space.
 
-# ✨ MyDummyExecutor
+You can use either the `Full` (where all three heads were trained) or the `Partial` (where the text and image heads were frozen) version of the model.
 
-**MyDummyExecutor** is a class that ...
+The following arguments can be passed on initialization:
 
-<!-- START doctoc generated TOC please keep comment here to allow auto update -->
-<!-- DON'T EDIT THIS SECTION, INSTEAD RE-RUN doctoc TO UPDATE -->
+- `model_path`: path of the pre-trained AudioCLIP model.
+- `default_traversal_paths`: default traversal path (used if not specified in request's parameters)
+- `default_batch_size`: default batch size (used if not specified in request's parameters)
+- `device`: device that the model is on (should be "cpu", "cuda" or "cuda:X", where X is the index of the GPU on the machine)
+
 **Table of Contents**
 
 - [🌱 Prerequisites](#-prerequisites)
@@ -17,11 +20,30 @@
 - [🎉️ Example](#%EF%B8%8F-example)
 - [🔍️ Reference](#%EF%B8%8F-reference)
 
-<!-- END doctoc generated TOC please keep comment here to allow auto update -->
-
 ## 🌱 Prerequisites
 
-Some conditions to fulfill before running the executor
+First, you should download the model and the vocabulary, which will be saved into the `.cache` folder inside your current directory (will be created if it does not exist yet).
+
+To do this, copy the `scripts/download_full.sh` script to your current directory (and make it executable):
+
+```
+wget https://github.com/jina-ai/executor-text-audioclip-text-encoder/blob/main/scripts/download_full.sh && chmod +x download_full.sh
+```
+
+Then, execute the script
+
+```
+./download_full.sh
+```
+
+This will download the `Full` version of the model (this is the default model used by the executor). If you instead want to download the `Partial` version of the model, execute
+
+```
+wget https://github.com/jina-ai/executor-text-audioclip-text-encoder/blob/main/scripts/download_partial.sh && chmod +x download_partial.sh
+./download_partial.sh
+```
+
+And then you will also need to pass the argument `model_path='.cache/AudioCLIP-Full-Training.pt'` when you initialize the executor.
 
 ## 🚀 Usages
 
@@ -33,7 +55,7 @@ Use the prebuilt images from JinaHub in your python codes,
 ```python
 from jina import Flow
 	
-f = Flow().add(uses='jinahub+docker://MyDummyExecutor')
+f = Flow().add(uses='jinahub+docker://AudioCLIPTextEncoder')
 ```
 
 or in the `.yml` config.
@@ -42,7 +64,7 @@ or in the `.yml` config.
 jtype: Flow
 pods:
   - name: encoder
-    uses: 'jinahub+docker://MyDummyExecutor'
+    uses: 'jinahub+docker://AudioCLIPTextEncoder'
 ```
 
 #### using source codes
@@ -51,7 +73,7 @@ Use the source codes from JinaHub in your python codes,
 ```python
 from jina import Flow
 	
-f = Flow().add(uses='jinahub://MyDummyExecutor')
+f = Flow().add(uses='jinahub://AudioCLIPTextEncoder')
 ```
 
 or in the `.yml` config.
@@ -60,25 +82,25 @@ or in the `.yml` config.
 jtype: Flow
 pods:
   - name: encoder
-    uses: 'jinahub://MyDummyExecutor'
+    uses: 'jinahub://AudioCLIPTextEncoder'
 ```
 
 
-### 📦️ Via Pypi
+### 📦️ Via pip
 
-1. Install the `jinahub-MY-DUMMY-EXECUTOR` package.
+1. Install the `jinahub-audioclip-text` package.
 
 	```bash
-	pip install git+https://github.com/jina-ai/EXECUTOR_REPO_NAME.git
+	pip install git+https://github.com/jina-ai/executor-text-audioclip-text-encoder.git
 	```
 
-1. Use `jinahub-MY-DUMMY-EXECUTOR` in your code
+1. Use `jinahub-audioclip-text` in your code
 
 	```python
 	from jina import Flow
-	from jinahub.SUB_PACKAGE_NAME.MODULE_NAME import MyDummyExecutor
+	from jinahub.encoder.audioclip_text import AudioCLIPTextEncoder
 	
-	f = Flow().add(uses=MyDummyExecutor)
+	f = Flow().add(uses=AudioCLIPTextEncoder)
 	```
 
 
@@ -87,60 +109,46 @@ pods:
 1. Clone the repo and build the docker image
 
 	```shell
-	git clone https://github.com/jina-ai/EXECUTOR_REPO_NAME.git
-	cd EXECUTOR_REPO_NAME
-	docker build -t my-dummy-executor-image .
+	git clone https://github.com/jina-ai/executor-text-audioclip-text-encoder.git
+	cd executor-text-audioclip-text-encoder
+	docker build -t jinahub-audioclip-text .
 	```
 
-1. Use `my-dummy-executor-image` in your codes
+1. Use `jinahub-audioclip-text` in your codes
 
 	```python
 	from jina import Flow
 	
-	f = Flow().add(uses='docker://my-dummy-executor-image:latest')
+	f = Flow().add(uses='docker://jinahub-audioclip-text:latest')
 	```
 	
 
 ## 🎉️ Example 
-
-Here we **MUST** show a **MINIMAL WORKING EXAMPLE**. We recommend to use `jinahub+docker://MyDummyExecutor` for the purpose of boosting the usage of Jina Hub. 
 
 It not necessary to demonstrate the usages of every inputs. It will be demonstrate in the next section.
 
 ```python
 from jina import Flow, Document
 
-f = Flow().add(uses='jinahub+docker://MyDummyExecutor')
+f = Flow().add(uses='jinahub+docker://AudioCLIPTextEncoder')
 
 with f:
-    resp = f.post(on='foo', inputs=Document(), return_results=True)
-    print(f'{resp}')
+	doc = Document(text='test text')
+    resp = f.post(on='foo', inputs=doc, return_results=True)
+    print(f'{doc.embedding}')
 ```
 
-### `on=/index` (Optional)
-
-When there are multiple APIs, we need to list the inputs and outputs for each one. If there is only one universal API, we only demonstrate the inputs and outputs for it.
-
 #### Inputs 
 
-`Document` with `blob` of the shape `256`.
+`Document` with the `text` attribute.
 
 #### Returns
 
-`Document` with `embedding` fields filled with an `ndarray` of the shape `embedding_dim` (=128, by default) with `dtype=nfloat32`.
+`Document` with `embedding` fields filled with an `ndarray` of the shape 1024 with `dtype=nfloat32`.
 
-### `on=/update` (Optional)
-
-When there are multiple APIs, we need to list the inputs and outputs for each on
-
-#### Inputs 
-
-`Document` with `blob` of the shape `256`.
-
-#### Returns
-
-`Document` with `embedding` fields filled with an `ndarray` of the shape `embedding_dim` (=128, by default) with `dtype=nfloat32`.
 
 ## 🔍️ Reference
-- Some reference
+
+- [AudioCLIP paper](https://arxiv.org/abs/2106.13043)
+- [AudioCLIP GitHub Repository](https://github.com/AndreyGuzhov/AudioCLIP)
 
