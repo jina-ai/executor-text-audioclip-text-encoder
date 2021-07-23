@@ -55,7 +55,10 @@ Use the prebuilt images from JinaHub in your python codes,
 ```python
 from jina import Flow
 	
-f = Flow().add(uses='jinahub+docker://AudioCLIPTextEncoder')
+f = Flow().add(
+	uses='jinahub+docker://AudioCLIPTextEncoder',
+	volumes='/path/to/pwd/.cache:/workspace/.cache'
+)
 ```
 
 or in the `.yml` config.
@@ -65,6 +68,7 @@ jtype: Flow
 pods:
   - name: encoder
     uses: 'jinahub+docker://AudioCLIPTextEncoder'
+	volumes: '/path/to/pwd/.cache:/workspace/.cache'
 ```
 
 #### using source codes
@@ -119,23 +123,29 @@ pods:
 	```python
 	from jina import Flow
 	
-	f = Flow().add(uses='docker://jinahub-audioclip-text:latest')
+	f = Flow().add(
+		uses='docker://jinahub-audioclip-text:latest',
+		volumes='/path/to/pwd/.cache:/workspace/.cache'
+	)
 	```
 	
 
 ## 🎉️ Example 
 
-It not necessary to demonstrate the usages of every inputs. It will be demonstrate in the next section.
+Here's a basic example demonstrating the use of this encoder
 
 ```python
 from jina import Flow, Document
 
-f = Flow().add(uses='jinahub+docker://AudioCLIPTextEncoder')
+f = Flow().add(
+	uses='jinahub+docker://AudioCLIPTextEncoder',
+	volumes='/path/to/pwd/.cache:/workspace/.cache'
+)
 
 with f:
 	doc = Document(text='test text')
     resp = f.post(on='foo', inputs=doc, return_results=True)
-    print(f'{doc.embedding}')
+    print(resp[0])
 ```
 
 #### Inputs 
