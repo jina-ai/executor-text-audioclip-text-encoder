@@ -54,9 +54,7 @@ class AudioCLIPTextEncoder(Executor):
         )
 
         for batch in batch_generator:
-            ((_, _, embeddings), _), _ = self.model.encode_text(
-                text=[[doc.text] for doc in batch]
-            )
+            embeddings = self.model.encode_text(text=[[doc.text] for doc in batch])
             embeddings = embeddings.cpu().numpy()
 
             for idx, doc in enumerate(batch):
