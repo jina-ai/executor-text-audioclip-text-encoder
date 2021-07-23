@@ -12,9 +12,9 @@ else
 fi
 
 VOCAB_FILE_NAME=bpe_simple_vocab_16e6.txt.gz
-if [ ! -f "${CACHE_DIR}/${MODEL_FILE_NAME}" ]; then
+if [ ! -f "${CACHE_DIR}/${VOCAB_FILE_NAME}" ]; then
   echo "------ Downloading vocab ------"
-  wget ${BASE_URL}/${MODEL_FILE_NAME} -O ${CACHE_DIR}/${MODEL_FILE_NAME}
+  wget ${BASE_URL}/${VOCAB_FILE_NAME} -O ${CACHE_DIR}/${VOCAB_FILE_NAME}
 else
   echo "Vocab already exists! Skipping."
 fi
