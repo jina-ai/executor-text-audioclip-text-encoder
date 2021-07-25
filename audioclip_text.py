@@ -33,7 +33,6 @@ class AudioCLIPTextEncoder(Executor):
         **kwargs
     ):
         super().__init__(*args, **kwargs)
-        torch.set_grad_enabled(False)
 
         self.model = AudioCLIP(pretrained=model_path).to(device).eval()
         self.default_traversal_paths = default_traversal_paths
@@ -53,9 +52,10 @@ class AudioCLIPTextEncoder(Executor):
             needs_attr='text',
         )
 
-        for batch in batch_generator:
-            embeddings = self.model.encode_text(text=[[doc.text] for doc in batch])
-            embeddings = embeddings.cpu().numpy()
+        with torch.no_grad():
+            for batch in batch_generator:
+                embeddings = self.model.encode_text(text=[[doc.text] for doc in batch])
+                embeddings = embeddings.cpu().numpy()
 
-            for idx, doc in enumerate(batch):
-                doc.embedding = embeddings[idx]
+                for idx, doc in enumerate(batch):
+                    doc.embedding = embeddings[idx]
