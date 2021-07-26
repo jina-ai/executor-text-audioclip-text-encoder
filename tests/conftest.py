@@ -44,4 +44,4 @@ def docs_with_chunk_chunk_text() -> DocumentArray:
     for i, chunk in enumerate(chunks):
         chunk.chunks.extend(chunks_2[i])
 
-    return root
+    return DocumentArray([root])
