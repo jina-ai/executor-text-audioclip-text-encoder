@@ -30,19 +30,18 @@ def docs_with_text() -> DocumentArray:
 
 @pytest.fixture()
 def docs_with_chunk_text() -> DocumentArray:
-    return DocumentArray(
-        [Document(chunks=[Document(text='hello world') for _ in range(10)])]
-    )
+    chunks = [Document(text='hello world') for _ in range(10)]
+    return DocumentArray([Document(chunks=chunks)])
 
 
 @pytest.fixture()
 def docs_with_chunk_chunk_text() -> DocumentArray:
-    return DocumentArray(
-        [
-            Document(
-                chunks=[
-                    Document(chunks=[Document(text='hello world') for _ in range(10)])
-                ]
-            )
-        ]
-    )
+    root = Document()
+    chunks = [Document() for _ in range(10)]
+    chunks_2 = [[Document(text='hello world') for _ in range(10)] for _ in range(10)]
+    
+    root.chunks.extend(chunks)
+    for i, chunk in enumerate(chunks):
+        chunk.chunks.extend(chunks_2[i])
+
+    return root
