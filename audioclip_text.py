@@ -42,6 +42,15 @@ class AudioCLIPTextEncoder(Executor):
     def encode(
         self, docs: Optional[DocumentArray], parameters: dict, *args, **kwargs
     ) -> None:
+        """
+        Method to create embedddings for documents by encoding their text.
+
+        :param docs: A document array with documents to create embeddings for. Only the
+            documents that have the ``text`` attribute will get embeddings.
+        :param parameters: A dictionary that contains parameters to control encoding.
+            The accepted keys are ``traversal_paths`` and ``batch_size`` - in their
+            absence their corresponding default values are used.
+        """
 
         batch_generator = get_docs_batch_generator(
             docs,
