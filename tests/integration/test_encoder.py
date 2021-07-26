@@ -12,10 +12,14 @@ from jinahub.encoder.audioclip_text import AudioCLIPTextEncoder
 def test_integration(data_generator: Callable, request_size: int):
     with Flow(return_results=True).add(uses=AudioCLIPTextEncoder) as flow:
         resp = flow.post(
-            on="/index", inputs=data_generator(), request_size=request_size, return_results=True
+            on="/index",
+            inputs=data_generator(),
+            request_size=request_size,
+            return_results=True,
         )
 
     assert min(len(resp) * request_size, 50) == 50
     for r in resp:
         for doc in r.docs:
             assert doc.embedding is not None
+            assert doc.embedding.shape == (1024,)
