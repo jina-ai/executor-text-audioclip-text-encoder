@@ -39,7 +39,7 @@ def docs_with_chunk_chunk_text() -> DocumentArray:
     root = Document()
     chunks = [Document() for _ in range(10)]
     chunks_2 = [[Document(text='hello world') for _ in range(10)] for _ in range(10)]
-    
+
     root.chunks.extend(chunks)
     for i, chunk in enumerate(chunks):
         chunk.chunks.extend(chunks_2[i])
