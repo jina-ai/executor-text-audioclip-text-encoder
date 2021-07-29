@@ -1,3 +1,5 @@
+# Moved to https://github.com/jina-ai/executors/tree/main/jinahub/encoders/text/AudioCLIPTextEncoder
+
 # ✨ AudioCLIPTextEncoder
 
 **AudioCLIPTextEncoder** is an encoder that encodes text using the [AudioCLIP](https://arxiv.org/abs/2106.13043) model.
