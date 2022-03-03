@@ -1,5 +1,5 @@
 manifest_version: 1
 name: AudioCLIPTextEncoder
 description: Executor that encodes text with the AudioCLIP model
-url: https://github.com/jina-ai/executors/tree/main/jinahub/encoders/text/AudioCLIPTextEncoder
+url: https://github.com/jina-ai/executor-text-audioclip-text-encoder
 keywords: [clip, audioclip, text, crossmodal, encoder, PyTorch, en]
