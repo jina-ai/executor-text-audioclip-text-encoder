@@ -23,10 +23,9 @@ def test_integration(request_size: int):
             return_results=True,
         )
 
-    assert sum(len(resp_batch.docs) for resp_batch in resp) == 50
-    for r in resp:
-        for doc in r.docs:
-            assert doc.embedding.shape == (_EMBEDDING_DIM,)
+    assert len(resp) == 50
+    for r in resp.embeddings:
+        assert r.shape == (_EMBEDDING_DIM,)
 
 
 @pytest.mark.docker
