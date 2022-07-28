@@ -1,6 +1,7 @@
 __copyright__ = "Copyright (c) 2020-2021 Jina AI Limited. All rights reserved."
 __license__ = "Apache-2.0"
 
+import warnings
 from typing import Optional
 
 import torch
@@ -18,7 +19,8 @@ class AudioCLIPTextEncoder(Executor):
         self,
         model_path: str = '.cache/AudioCLIP-Full-Training.pt',
         tokenizer_path: str = '.cache/bpe_simple_vocab_16e6.txt.gz',
-        traversal_paths: str = '@r',
+        access_paths: str = '@r',
+        traversal_paths: Optional[str] = None,
         batch_size: int = 32,
         device: str = 'cpu',
         download_model: bool = False,
@@ -27,8 +29,9 @@ class AudioCLIPTextEncoder(Executor):
     ):
         """
         :param model_path: path to the pre-trained AudioCLIP model.
-        :param traversal_paths: default traversal path (used if not specified in
+        :param access_paths: default traversal path (used if not specified in
             request's parameters)
+        :param traversal_paths: please use access_paths
         :param batch_size: default batch size (used if not specified in
             request's parameters)
         :param device: device that the model is on (should be "cpu", "cuda" or
@@ -57,7 +60,13 @@ class AudioCLIPTextEncoder(Executor):
             .eval()
         )
 
-        self.traversal_paths = traversal_paths
+        if traversal_paths is not None:
+            self.access_paths = traversal_paths
+            warnings.warn("'traversal_paths' will be deprecated in the future, please use 'access_paths'.",
+                          DeprecationWarning,
+                          stacklevel=2)
+        else:
+            self.access_paths = access_paths
         self.batch_size = batch_size
 
     @requests
@@ -75,13 +84,13 @@ class AudioCLIPTextEncoder(Executor):
         the
             documents that have the ``text`` attribute will get embeddings.
         :param parameters: A dictionary that contains parameters to control encoding.
-            The accepted keys are ``traversal_paths`` and ``batch_size`` - in their
+            The accepted keys are ``access_paths`` and ``batch_size`` - in their
             absence their corresponding default values are used.
         """
         if not docs:
             return
 
-        tpaths = parameters.get('traversal_paths', self.traversal_paths)
+        tpaths = parameters.get('access_paths', self.access_paths)
         batch_generator = DocumentArray(
             filter(lambda doc: len(doc.text) > 0, docs[tpaths])
         ).batch(
