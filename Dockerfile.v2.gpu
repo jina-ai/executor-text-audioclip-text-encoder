@@ -8,13 +8,13 @@ ARG JINA_VERSION=3.11.0
 ARG BACKEND_TAG=torch
 
 # constant, wont invalidate cache
-LABEL org.opencontainers.image.vendor="Jina AI Limited" \
-      org.opencontainers.image.licenses="Apache 2.0" \
-      org.opencontainers.image.title="CLIP-as-Service" \
-      org.opencontainers.image.description="Embed images and sentences into fixed-length vectors with CLIP" \
-      org.opencontainers.image.authors="hello@jina.ai" \
-      org.opencontainers.image.url="clip-as-service" \
-      org.opencontainers.image.documentation="https://clip-as-service.jina.ai/"
+# LABEL org.opencontainers.image.vendor="Jina AI Limited" \
+#      org.opencontainers.image.licenses="Apache 2.0" \
+#      org.opencontainers.image.title="AudioCLIPText-as-Service" \
+#      org.opencontainers.image.description="Embed images and sentences into fixed-length vectors with CLIP" \
+#      org.opencontainers.image.authors="hello@jina.ai" \
+#      org.opencontainers.image.url="clip-as-service" \
+#      org.opencontainers.image.documentation="https://clip-as-service.jina.ai/"
 
 RUN apt-get update && apt-get install -y --no-install-recommends \
     python3-setuptools python3-wheel python3-pip \
@@ -23,3 +23,16 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
 RUN python3 -m pip install --default-timeout=1000 --no-cache-dir torch torchvision torchaudio nvidia-pyindex transformers --extra-index-url https://download.pytorch.org/whl/cu113
 RUN python3 -m pip install --default-timeout=1000 --no-cache-dir "jina[standard]==${JINA_VERSION}"
 
+# install git
+RUN apt-get -y update && apt-get install -y wget libtinfo5 \
+    && rm -rf /var/lib/apt/lists/*
+
+# install requirements before copying the workspace
+COPY gpu_requirements.txt gpu_requirements.txt
+RUN pip install -r gpu_requirements.txt --no-cache-dir
+
+# setup the workspace
+COPY . /workdir
+WORKDIR /workdir
+
+ENTRYPOINT ["jina", "executor", "--uses", "config.yml"]
