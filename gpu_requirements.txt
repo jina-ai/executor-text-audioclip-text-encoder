@@ -1,5 +1,8 @@
 
--f https://download.pytorch.org/whl/torch_stable.html
+
+
+#-f https://download.pytorch.org/whl/torch_stable.html
+-f https://download.pytorch.org/whl/cu116
 torch==1.9.0 # should have gpu 
 
 # Curated requirements from AudioCLIP
