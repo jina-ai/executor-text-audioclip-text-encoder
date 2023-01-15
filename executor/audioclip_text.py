@@ -6,6 +6,7 @@ from typing import Optional
 
 import torch
 from jina import DocumentArray, Executor, requests
+from jina.logging.predefined import default_logger
 
 from .audio_clip.model import AudioCLIP
 
@@ -40,6 +41,7 @@ class AudioCLIPTextEncoder(Executor):
         :param download_model: whether to download the model at start-up
         """
         super().__init__(*args, **kwargs)
+        default_logger.debug(f'torch has cuda available: {torch.cuda.is_available()}')
 
         if download_model:
             import os
@@ -51,6 +53,9 @@ class AudioCLIPTextEncoder(Executor):
                 script_name = 'scripts/download_partial.sh'
             subprocess.call(['sh', script_name], cwd=root_path)
 
+        default_logger.debug(f'loading model from {model_path}')
+        default_logger.debug(f'loading tokenizer from {tokenizer_path}')
+        default_logger.debug(f'using device: {device}')
         self.model = (
             AudioCLIP(
                 pretrained=model_path,
@@ -59,6 +64,7 @@ class AudioCLIPTextEncoder(Executor):
             .to(device)
             .eval()
         )
+        default_logger.debug(f'model loaded, model defive: {self.model.device}')
 
         if traversal_paths is not None:
             self.access_paths = traversal_paths
