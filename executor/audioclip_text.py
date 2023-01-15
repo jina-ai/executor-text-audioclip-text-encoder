@@ -93,7 +93,7 @@ class AudioCLIPTextEncoder(Executor):
             The accepted keys are ``access_paths`` and ``batch_size`` - in their
             absence their corresponding default values are used.
         """
-        default_logger.debug(f'model loaded, model defive: {self.model.device}')
+        default_logger.debug(f'model loaded, model defice: {self.model.device}')
         if not docs:
             return
 
