@@ -1,7 +1,19 @@
+
+
+
+#-f https://download.pytorch.org/whl/torch_stable.html
+-f https://download.pytorch.org/whl/cu116
+torch==1.9.0 # should have gpu 
+
+# Curated requirements from AudioCLIP
 librosa==0.7.2
+torchaudio==0.9.0
+torchvision==0.10.0
+pytorch-ignite==0.3.0
 scipy==1.7.1
 termcolor==1.1.0
 tqdm==4.43.0
 visdom==0.1.8.9
 ftfy==6.0.3
 regex==2021.7.6
+
